@@ -9,4 +9,7 @@ RUN npx tsc
 FROM node:20-alpine3.17
 
 WORKDIR /app
-COPY --from=build /app/dist /app
+COPY . .
+COPY --from=build /app/dist /app/dist
+
+RUN ["node", "./dist/main.js"]
