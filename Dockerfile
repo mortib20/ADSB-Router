@@ -14,4 +14,4 @@ COPY --from=build /app/dist /app/dist
 
 RUN npm install
 
-RUN ["node", "./dist/main.js"]
+CMD ["node", "./dist/main.js"]
