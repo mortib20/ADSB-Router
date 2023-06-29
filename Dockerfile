@@ -12,4 +12,6 @@ WORKDIR /app
 COPY . .
 COPY --from=build /app/dist /app/dist
 
+RUN npm install
+
 RUN ["node", "./dist/main.js"]
