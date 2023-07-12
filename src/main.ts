@@ -79,8 +79,8 @@ function CreateOutputs(list: Output[]) {
 }
 
 /**
- * 1. Start Server
- * 2. Enable Outputs
- * 3. Server received data => send to Outputs
- * 4. Reconnect after error
+ * 1. Start Server (check)
+ * 2. Enable Outputs (check)
+ * 3. Server received data => send to Outputs (check)
+ * 4. Reconnect after error (check)
  */
