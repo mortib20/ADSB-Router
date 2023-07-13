@@ -1,16 +1,12 @@
 {
   "name": "adsb-router",
   "version": "1.0.0",
-  "description": "",
+  "description": "Routes received ADSB to some tracking sites.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
+  "author": "mortib20",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^20.3.2",
-    "typescript": "^5.1.6",
-    "winston": "^3.9.0"
+    "typescript": "^5.1.6"
   }
 }

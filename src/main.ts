@@ -1,5 +1,4 @@
-import Server, { Socket, createConnection, createServer } from 'net';
-import { createLogger, format, transports } from 'winston';
+import { createConnection, createServer } from 'net';
 
 interface Output {
     name: string;
@@ -7,13 +6,24 @@ interface Output {
     port: number;
 }
 
+class Logger {
+    info(message: string) {
+        const currentDate = new Date().toISOString();
+        const logMessage = `[${currentDate}] \x1b[32minfo\x1b[0m: ${message}`;
+        console.log(logMessage);
+    }
+
+    error(message: string) {
+        const currentDate = new Date().toISOString();
+        const logMessage = `[${currentDate}] \x1b[31merror\x1b[0m: ${message}`;
+        console.error(logMessage);
+    }
+}
+
 const port = 30004;
 
 /* Logger */
-const logger = createLogger({
-    format: format.combine(format.colorize(), format.simple()),
-    transports: [new transports.Console()],
-});
+const logger = new Logger();
 
 /* Network */
 const outputsList: Output[] = [
@@ -65,9 +75,9 @@ function CreateOutputs(list: Output[]) {
         })
 
         socket.on('close', (hadError) => {
-            if(hadError) {
+            if (hadError) {
                 logger.info(`Reconnecting to ${output.name}`);
-                socket.connect({port: output.port, host: output.host, keepAlive: true})
+                socket.connect({ port: output.port, host: output.host, keepAlive: true })
                 return;
             }
 
