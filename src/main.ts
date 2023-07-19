@@ -77,7 +77,7 @@ function CreateOutputs(list: Output[]) {
         socket.on('close', (hadError) => {
             if (hadError) {
                 logger.info(`Reconnecting to ${output.name}`);
-                socket.connect({ port: output.port, host: output.host, keepAlive: true })
+                setTimeout(() => socket.connect({ port: output.port, host: output.host, keepAlive: true }), 5000);
                 return;
             }
 
