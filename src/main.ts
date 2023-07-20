@@ -1,24 +1,6 @@
 import { createConnection, createServer } from 'net';
-
-interface Output {
-    name: string;
-    host: string;
-    port: number;
-}
-
-class Logger {
-    info(message: string) {
-        const currentDate = new Date().toISOString();
-        const logMessage = `[${currentDate}] \x1b[32minfo\x1b[0m: ${message}`;
-        console.log(logMessage);
-    }
-
-    error(message: string) {
-        const currentDate = new Date().toISOString();
-        const logMessage = `[${currentDate}] \x1b[31merror\x1b[0m: ${message}`;
-        console.error(logMessage);
-    }
-}
+import { Logger } from './Logger';
+import { Output } from './Output';
 
 const port = 30004;
 
@@ -62,32 +44,34 @@ input.on('error', (err) => {
 input.listen(port, () => logger.info(`ADSB-Router listening on port :${port}`));
 
 function CreateOutputs(list: Output[]) {
-
     return list.map((output) => {
-        var socket = createConnection({ host: output.host, port: output.port, keepAlive: true, keepAliveInitialDelay: 60000, allowHalfOpen: true });
-
-        socket.on('connect', () => {
-            logger.info(`OUTPUT: ${output.name} connected`);
-        })
-
-        socket.on('error', (err) => {
-            logger.error(`OUTPUT: ${output.name} -> ${err.message}`);
-        })
-
-        socket.on('close', (hadError) => {
-            if (hadError) {
-                logger.info(`Reconnecting to ${output.name}`);
-                setTimeout(() => socket.connect({ port: output.port, host: output.host, keepAlive: true }), 5000);
-                return;
-            }
-
-            logger.info(`OUTPUT: ${output.name} closed`);
-        })
+        var socket = CreateOutput(output);
 
         return socket;
     });
 }
 
+function CreateOutput(output: Output) {
+    var socket = createConnection({ host: output.host, port: output.port, keepAlive: true, keepAliveInitialDelay: 60000, allowHalfOpen: true });
+
+    socket.on('connect', () => {
+        logger.info(`OUTPUT: ${output.name} connected`);
+    });
+
+    socket.on('error', (err) => {
+        logger.error(`OUTPUT: ${output.name} -> ${err.message}`);
+    });
+
+    socket.on('close', (hadError) => {
+        if (hadError) {
+            logger.info(`Reconnecting to ${output.name}`);
+            socket = CreateOutput(output);
+        } else {
+            logger.info(`OUTPUT: ${output.name} closed`);
+        }
+    });
+    return socket;
+}
 /**
  * 1. Start Server (check)
  * 2. Enable Outputs (check)
